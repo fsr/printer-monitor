@@ -1,21 +1,19 @@
 #!/usr/local/bin/python3
-import errno
 import os
-import subprocess
 import json
-import urllib.request
-import snmpy
 import time
 import logging
+import urllib.request
 
+
+basepath = os.path.dirname(os.path.abspath(__file__))
 logstr = '{time}:{printerdata}  Result: {result}'
-printer = {}
-url = ''
 logging.basicConfig(filename=os.path.join(
     basepath, '../printerreport.log'), level=logging.INFO)
 
 
-def publish(allinfo, basepath):
+def publish(data):
+    allinfo, url = data
     try:
         r = urllib.request.urlopen(
             url,
