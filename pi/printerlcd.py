@@ -1,9 +1,15 @@
 #!/usr/local/bin/python3
+import math
 import Adafruit_GPIO as GPIO
 import Adafruit_CharLCD as LCD
 
+
 basepath = None
 get_printerdata = None
+lcdstatus = 1
+printers = []
+current_printer = 0
+reset_counter = {}
 
 # PIN CONFIG
 bus = 1
@@ -43,66 +49,51 @@ mcp.pullup(pin_lcd, 1)
 def initalize_run(func, path):
     get_printerdata = func
     basepath = path
-    print(get_printerdata())
+    tmp = get_printerdata()[0]
+    for entry in tmp:
+        reset_counter[entry] = tmp[entry]
+        printers.append(entry)
+    print(printercount, '\n', reset_counter, '\n', printers)
 
 
-# TODO: Rewrite old code from below
+def switchlcd():
+    global lcdstatus
+    lcdstatus = (lcdstatus + 1) % 2
+    lcd.enable_display(lcdstatus)
+    lcd.set_backlight(lcdstatus)
 
-# def readcounter():
-# 	try:
-# 		counts = subprocess.check_output(commands[printer], shell=True).split()
-# 	except:
-# 		return 0
-# 	return int(counts[0])
-#
-# def resetcounter():
-# 	global counter, previous
-# 	counter[printer] = 0
-# 	previous[printer] = readcounter()
-# 	refresh()
-#
-# def calcprice(pages):
-# 	if(pages==0):
-# 		return 0
-# 	return int((math.ceil((pages*2)/5.0)))*5
-#
-# def refresh():
-# 	global counter
-# 	total = readcounter()
-# 	counter[printer] = total-previous[printer]
-# 	lcd.clear()
-# 	lcd.message("{1:s}: {0:d}".format(total, printers[printer]))
-# 	lcd.message("\n")
-# 	lcd.message("{0:d} S - {1:d} ct".format(counter[printer], calcprice(counter[printer])))
-#
-# def speak():
-# 	speakcmd = 'espeak -vde+f3 "Du hast {} Seiten auf dem {} gedruckt, das kostet {} Cent." 2>/dev/null'.format(counter[printer], printers[printer], calcprice(counter[printer]))
-# 	subprocess.call(speakcmd, shell=True)
-#
-# def switchlcd():
-# 	global lcdstatus
-# 	if(lcdstatus==1):
-# 		lcdstatus=0
-# 		lcd.enable_display(lcdstatus)
-# 	else:
-# 		lcdstatus=1
-# 		lcd.enable_display(lcdstatus)
-# 	lcd.set_backlight((lcdstatus+1)%2)
-# 	refresh()
-#
-# def switchprinter():
-# 	global printer
-# 	printer = (printer+1)%len(printers)
-# 	refresh()
-#
-# for p in range(len(printers)):
-# 	printer = p
-# 	resetcounter()
-#
+
+def switchprinter():
+    global current_printer
+    current_printer = (current_printer + 1) % len(printers)
+    refresh()
+
+
+def refresh():
+    _printer = printers[current_printer]
+    current_counter = get_printerdata()[0]
+    differece = current_counter[_printer]-reset_counter[_printer]
+    lcd.clear()
+    lcd.message("{printer}: {total}\n".format(_printer,
+                                              current_counter[_printer]))
+    lcd.message("{pages} - {price}".format(differece, calcprice(differece)))
+
+
+def calcprice(pages):
+    return math.ceil(pagecounter*2/5)*5
+
+
+def reset():
+    _printer = printers[current_printer]
+    reset_counter[_printer] = get_printerdata()[0][_printer]
+    refresh()
+
+
+# TODO: Add trigger
+
 # timing = 0
 # while(True):
 # 	timing+=1
-# 	mcp.setup(10, GPIO.IN)
 # 	if(mcp.input(10)==0):
 # 		refresh()
 # 	if(mcp.input(9)==0):
