@@ -5,7 +5,7 @@ import Adafruit_CharLCD as LCD
 basepath = None
 get_printerdata = None
 
-PIN CONFIG
+# PIN CONFIG
 bus = 1
 address = 0x20
 
