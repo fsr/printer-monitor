@@ -3,26 +3,24 @@ import os
 import sys
 import json
 import time
-import sched
 import snmpy
 import printerlcd
 import printerreport
 import urllib.request
+from threading import Timer
 
 basepath = os.path.dirname(os.path.abspath(__file__))
-scheduler = sched.scheduler(time.time, time.sleep)
 
 
 def main(publish=False):
     if publish:
-        scheduler.enter(300, 1, call_report)
-        scheduler.run()
+        Timer(300, call_report).start()
     call_lcd()
 
 
 def call_report():
     printerreport.publish(get_printerdata())
-    scheduler.enter(300, 1, call_report)
+    Timer(300, call_report).start()
 
 
 def call_lcd():
