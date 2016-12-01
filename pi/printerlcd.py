@@ -1,7 +1,6 @@
 #!/usr/local/bin/python3
 import math
 import time
-from threading import Timer
 import Adafruit_GPIO as GPIO
 import Adafruit_CharLCD as LCD
 
@@ -107,10 +106,10 @@ def run():
             switchlcd()
         if mcp.input(8) == 0:
             switchprinter()
-        if timing > 300:
+        if timing > 150:
             timing = 0
             refresh()
-        time.sleep(0.2)
+        time.sleep(0.1)
 
 
 if __name__ == '__main__':
