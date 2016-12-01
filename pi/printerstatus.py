@@ -2,47 +2,48 @@
 import os
 import sys
 import json
-import time
-import snmpy
 import printerlcd
 import printerreport
-import urllib.request
+from subprocess import check_output
 from threading import Timer
 
 basepath = os.path.dirname(os.path.abspath(__file__))
+printer = {}
+url = ''
 
 
 def main(publish=False):
     if publish:
         Timer(300, call_report).start()
+    setup_data()
     call_lcd()
 
 
 def call_report():
-    printerreport.publish(get_printerdata())
+    printerreport.publish(allinfo=get_printerdata(), url=url)
     Timer(300, call_report).start()
 
 
 def call_lcd():
-    printerlcd.initalize_run(get_printerdata, basepath)
+    printerlcd.initialize_run(func=get_printerdata, snmp=printer)
 
 
-def get_printerdata():
-    printer = {}
-    url = ''
-    with open(os.path.join(basepath, 'printer.json'), 'r') as file:
-        tmp = json.load(file)
+def setup_data():
+    global printer, url
+    with open(os.path.join(basepath, 'printer.json'), 'r') as f:
+        tmp = json.load(f)
         tmp_printer = tmp['printers']
         url = tmp["url"]
         for item in tmp_printer:
-            printer[item] = {'printer': snmpy.Snmpy(tmp_printer[item]['ip'],
-                                                    'public', ''),
-                             'snmp': tmp_printer[item]['snmp']}
+            printer[item] = 'snmpget -v2c -O vq -c public {ip} {snmp}'.format(ip=tmp_printer[item]['ip'],
+                                                                              snmp=tmp_printer[item]['snmp']).split()
+
+
+def get_printerdata():
     allinfo = {}
     for item in printer:
-        allinfo[item] = int(printer[item]['printer']
-                            .get(printer[item]['snmp']))
-    return allinfo, url
+        allinfo[item] = int(check_output(printer[item]))
+    return allinfo
 
 
 if __name__ == '__main__':

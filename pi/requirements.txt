@@ -1,3 +1,2 @@
 Adafruit-GPIO
 Adafruit-CharLCD
-snmpy

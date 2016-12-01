@@ -1,5 +1,6 @@
 #!/usr/local/bin/python3
 import math
+import time
 from threading import Timer
 import Adafruit_GPIO as GPIO
 import Adafruit_CharLCD as LCD
@@ -11,6 +12,7 @@ lcdstatus = 1
 printers = []
 current_printer = 0
 reset_counter = {}
+snmp_printer = {}
 
 # PIN CONFIG
 bus = 1
@@ -47,10 +49,11 @@ mcp.pullup(pin_refresh, 1)
 mcp.pullup(pin_lcd, 1)
 
 
-def initalize_run(func, path):
+def initialize_run(func, snmp):
+    global get_printerdata, snmp_printer
     get_printerdata = func
-    basepath = path
-    tmp = get_printerdata()[0]
+    snmp_printer = snmp
+    tmp = get_printerdata()
     for entry in tmp:
         reset_counter[entry] = tmp[entry]
         printers.append(entry)
@@ -61,7 +64,7 @@ def switchlcd():
     global lcdstatus
     lcdstatus = (lcdstatus + 1) % 2
     lcd.enable_display(lcdstatus)
-    lcd.set_backlight(lcdstatus)
+    lcd.set_backlight((lcdstatus + 1) % 2)
 
 
 def switchprinter():
@@ -72,41 +75,42 @@ def switchprinter():
 
 def refresh():
     _printer = printers[current_printer]
-    current_counter = get_printerdata()[0]
-    differece = current_counter[_printer] - reset_counter[_printer]
+    current_counter = get_printerdata()
+    difference = current_counter[_printer] - reset_counter[_printer]
     lcd.clear()
-    lcd.message("{printer}: {total}\n".format(_printer,
-                                              current_counter[_printer]))
-    lcd.message("{pages} - {price}".format(differece, calcprice(differece)))
+    lcd.message("{printer}: {total}\n".format(printer=_printer,
+                                              total=current_counter[_printer]))
+    lcd.message("{pages} S. - {price} ct".format(pages=difference, price=calcprice(difference)))
 
 
 def calcprice(pages):
-    return math.ceil(pagecounter * 2 / 5) * 5
+    return math.ceil(pages * 2 / 5) * 5
 
 
 def reset():
     _printer = printers[current_printer]
-    reset_counter[_printer] = get_printerdata()[0][_printer]
+    reset_counter[_printer] = get_printerdata()[_printer]
     refresh()
-
-
-def check_trigger(trigger, value, function):
-    if trigger == value:
-        function()
-    Timer(0.2, check_trigger, [trigger, value, function]).start()
-
-
-def const_refresh():
-    refresh()
-    Timer(60, const_refresh).start()
 
 
 def run():
-    check_trigger(mcp.input(pin_refresh), 0, refresh)
-    check_trigger(mcp.input(pin_reset), 0, reset)
-    check_trigger(mcp.input(pin_lcd), 0, switchlcd)
-    check_trigger(mcp.input(pin_changeprinter), 0, switchprinter)
-    const_refresh()
+    refresh()
+    timing = 0
+    while True:
+        timing += 1
+        mcp.setup(10, GPIO.IN)
+        if mcp.input(10) == 0:
+            refresh()
+        if mcp.input(9) == 0:
+            reset()
+        if mcp.input(14) == 0:
+            switchlcd()
+        if mcp.input(8) == 0:
+            switchprinter()
+        if timing > 300:
+            timing = 0
+            refresh()
+        time.sleep(0.2)
 
 
 if __name__ == '__main__':
