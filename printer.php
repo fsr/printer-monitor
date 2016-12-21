@@ -6,7 +6,7 @@ $file = file_get_contents('php://input');
 $data = json_decode($file);
 
 $ip_addr = $_SERVER['REMOTE_ADDR'];
-if($ip_addr === '127.0.0.1') {
+if($ip_addr === '141.76.100.250') {
 
 	$timestamp = $data->ts;
 	$kyocera = $data->kyocera;
