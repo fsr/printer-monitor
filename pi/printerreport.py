@@ -1,5 +1,4 @@
 #!/usr/local/bin/python3
-import json
 import time
 import urllib.request
 
@@ -8,10 +7,11 @@ logstr = '{time}:{printerdata}  Result: {result}'
 
 
 def publish(allinfo, url):
+    allinfo["ts"] = int(time.time())
     try:
         r = urllib.request.urlopen(
             url,
-            data=json.dumps(allinfo).encode('utf8'))
+            data=allinfo)
         print(logstr.format(
             time=time.strftime("%Y-%m-%d %H:%M:%S"),
             printerdata=allinfo, result=r.msg))
