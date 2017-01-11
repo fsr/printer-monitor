@@ -1,2 +1,3 @@
+RPi.GPIO
 Adafruit-GPIO
 Adafruit-CharLCD
