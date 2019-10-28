@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Printer Monitor</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <button onclick="reset()">Reset</button>
+  <div id="priceArea">
+    Pages:
+    <span id="pages">1000</span>
+    <span class="devider">|</span>
+    Price:
+    <span id="price">20,05€</span><br>
+  </div>
+  <div id="noticeArea" style="display: none;">
+    <span class="smalltext">Please reset before printing!</span>
+  </div>
+  <script src="./checkPrinterStatus.js"></script>
+</body>
+
+</html>

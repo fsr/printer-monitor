@@ -1,0 +1,20 @@
+{
+  "name": "printermonitor",
+  "version": "1.0.1",
+  "description": "Printer Monitor",
+  "productName": "Printer Monitor",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/fsr/printer-monitor",
+  "keywords": [
+    "Electron",
+    "Printer"
+  ],
+  "author": "Lucas Vogel",
+ 
+  "devDependencies": {
+    "electron-packager": "^14.0.6"
+  }
+}
