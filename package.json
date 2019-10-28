@@ -13,7 +13,9 @@
     "Printer"
   ],
   "author": "Lucas Vogel",
- 
+  "dependencies": {
+    "electron": "^7.0.0"
+  },
   "devDependencies": {
     "electron-packager": "^14.0.6"
   }
