@@ -17,6 +17,7 @@ body{
     line-height: 13px;
     margin-top:3px;
     font-weight: lighter;
+    overflow: hidden;
   }
   span,div {
       display: inline-block;
@@ -63,3 +64,6 @@ body{
     }
   }
   
+  ::-webkit-scrollbar {
+    display: none;
+}
