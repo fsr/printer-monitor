@@ -30,14 +30,17 @@ body{
       padding-left: 3px;
       padding-right: 3px;
   }
+  span#smalltext{
+      display: inline-block;
+  }
   button{
-      height: 18px;
+      height: 27px;
       background-color: #960035;
       color:white;
       border: 1px solid grey;
       border-radius: 3px;
       margin:0px;
-      vertical-align: baseline;
+      vertical-align: top;
       display: inline-block;
   }
   button:hover{
@@ -47,7 +50,7 @@ body{
     background-color: #d8004c;
   }
 
-  #noticeArea{
+  .smalltext{
     animation: animationFrames linear 1s;
     animation-iteration-count:infinite;
   }

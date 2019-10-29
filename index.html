@@ -10,15 +10,21 @@
 <body>
   <button onclick="reset()">Reset</button>
   <div id="priceArea">
-    Pages:
-    <span id="pages">1000</span>
+    Dell:
+    <span id="dellPrice">0,00€</span> for 
+    <span id="dellPages">0</span> Pages 
+    
     <span class="devider">|</span>
-    Price:
-    <span id="price">20,05€</span><br>
-  </div>
-  <div id="noticeArea" style="display: none;">
+    Kyocera:
+    <span id="kyoPrice">0,00€</span> for 
+    <span id="kyoPages">0</span> Pages
+    <br>
+    <!-- <span class="devider">|</span> -->
+    Total:
+    <span id="price">0,00€</span>
     <span class="smalltext">Please reset before printing!</span>
   </div>
+    
   <script src="./checkPrinterStatus.js"></script>
 </body>
 

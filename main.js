@@ -16,14 +16,14 @@ function createWindow () {
   // width: 250, 
   //   height: 23, 
   mainWindow = new BrowserWindow({
-    width: 250, 
-    height: 23, 
+    width: 400, 
+    height: 35, 
     alwaysOnTop:true,
     frame: false,
     fullscreenable: false,
     resizable: false,
     y:0,
-    x:900,
+    x:800,
     skipTaskbar:true,
     webPreferences: {
       nodeIntegration: true
@@ -60,7 +60,8 @@ app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
-    app.quit()
+    app.relaunch();
+    app.quit();
   }
 })
 
