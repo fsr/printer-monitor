@@ -170,7 +170,7 @@ async function getDellData() {
                 pagesNumber = parseInt(stderr);
             }
 
-            if (pagesNumber != undefined && pagesNumber != null && pagesNumber != "") {
+            if (pagesNumber != undefined && pagesNumber != null && isNaN(pagesNumber) == false && pagesNumber != "") {
                 if (dellOldPrinterPages == null) {
                     dellOldPrinterPages = pagesNumber;
                 }
